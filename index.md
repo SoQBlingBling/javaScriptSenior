@@ -145,6 +145,514 @@ console.log(d); //输出：[5, 1, 2]
 
 
 
+### 3.函数说明
+
+#### 1.什么是函数
+
+具有特定功能的n条语句
+
+只有函数是可执行的，其他类型是不可执行的
+
+#### 2.为什么要使用函数
+
+提高代码复用率
+
+便于阅读和交流
+
+#### 3.如何定义函数
+
+```js
+//1,函数自调用 === window.函数调用
+var fun = function(){}
+function fun (){
+    
+}
+//2.回调函数
+//你定义的，没有直接调用 但最终它执行了（在特定的条件或时刻）
+settimeout(function(){},2000)
+//3.构造函数
+function Person (name,age){
+    this.name = name;
+    this.age = age;
+}
+var a1 = new Person('张三'，20)
+//构造函数大小写都可以
+//4.call 、 apply
+改变函数中this的指向
+//5.立即调用函数 iief
+(function(){}})()
+特点：只执行一次 
+代码执行到函数执行的时候执行
+内部的数据是私有的
+```
+
+
+
+#### 4.如何调用执行函数
+
+
+
+### 4.this说明
+
+#### 1.this 是什么？
+
+是一个关键字  一个内置的引用对象
+
+在函数中都可以使用this
+
+this 代表当前调用函数指代对象
+
+在定义函数的时候this 还没有确定 只有在执行时才动态确定（绑定的）
+
+#### 2.如何确定this 的值？
+
+```js
+
+
+test（）
+
+obj.test()
+
+new test()
+
+test().call   test.apply()    test.bind()
+```
+
+
+
+#### 2.new 操作符
+
+```js
+new function(){
+    
+}
+语法:new function(){
+    
+}
+1.创建空对象
+2.执行函数
+3.确认this 的指向
+4.返回执行的结果
+function Persion (name,age){  1.创建空对象
+2.执行函数
+3.确认this的指向
+    this.name = name;
+    this.age = age
+}
+4.返回结果
+var persion1= new Porsion('zhangsan',20)
+```
+
+
+
+### 5.原型链
+
+#### 1.概念
+
+- 原型就是一个对象
+
+- 每个函数都都有一个prototype的属性，该属性指向的是当前函数的原型对象
+
+- 每个实例对象都有一个_ _ proto _ _的属性，该属性指向的是当前实例对象的隐式原型对象
+- 构造函数的显示原型对象 ===当前构造函数的实例对象的隐式原型对象
+
+#### 2.原型链
+
+- 当查找对象的属性的时候在自身找，如果自身没有沿着_ _ proto _ _这条线去找如果还是没有找到就是undefined
+- _ _ proto _ _ 这条链就是原型链
+
+#### 3.扩展原型链
+
+```js
+function Fun(){
+    
+}
+Fun.xxx = 123;
+console.log(Fun)//function Fun（）{}
+console.log(Fun.xxx)//123    
+//函数对象
+
+
+
+var obj = {}   == var obj = new Object()
+// 所以obj = {}   也可以叫做实例对象 
+
+var fun = new Fun()
+//创建 fun实例对象 Fun是构造函数
+```
+
+
+
+### 6.instanceof运算符
+
+- typeof：
+  - 可以区别：数值、字符串、布尔值、undefined、function
+  - 不能区别：null与对象、一般的对象与数组
+
+在检测 null 与 array 、object  的时候都会返回一个object
+
+
+
+- instanceof：
+  - 专门用来判断对象数据的类型：Object、array与function
+  - 可以判断 undefined 与null
+
+```js
+//语法 a instanceof b 判断 a是否是b的实例
+
+```
+
+
+
+### 7.执行上线文，与执行上下文栈
+
+#### 1.变量提升（预解析）
+
+定义：
+
+**js引擎在js代码正式执行之前会做一些预处理工作**
+
+- 1.找var 和function 关键字
+- 2.找到var 以后提前将var 后面的变量提前声明但是不赋值
+- 3.找到function 之后定义一个函数
+
+
+
+#### 2.执行上下文
+
+定义：
+
+**js引擎在js代码正式执行之前会先创建执行环境，在执行环境中作预处理工作**
+
+工作内容：
+
+- 1.创建一个空对象
+
+- 2.该空对象用于收集变量，函数，函数的参数（找var 和function）
+
+- 3.创建作用域链
+- 4.确认this 的指向
+
+
+
+栈内存：  先进后出,后进先出
+
+函数执行完出栈
+
+1.在全局代码执行前，js引擎就会创建一个栈来储存管理所有的执行上下文对象
+
+2.字全局执行上下文（window）确定吼，将其添加到栈中（压栈）
+
+3.在函数执行上下文创建后，将其添加到栈中（压栈）
+
+4.当前函数执行完后，将栈顶的对象移出（出栈）
+
+5.当所有的代码执行完后，栈中只剩下window
+
+
+
+预先处理函数再去处理变量如果函数已经存在就会被忽略
+
+```js
+    console.log(a)//function a（）{}   
+
+        var a =3;
+        function a() { }
+ console.log(a)//3
+```
+
+变量预处理 in 操作符
+
+```js
+判断对象是否为数组/对象的元素/属性：
+格式：（变量 in 对象）......注意，，，
+当“对象”为数组时，“变量”指的是数组的“索引”；
+
+　　当“对象”为对象是，“变量”指的是对象的“属性”。
+var arr = ["a","b","2","3","str"];  
+var result = ("b" in arr);  
+var result1 = (4 in arr);  
+document.write(result+"<br>");  
+document.write(result1+"<br>");  
+
+false  
+true  
+
+var obj={  
+         w:"wen",  
+         j:"jian",  
+         b:"bao"  
+           
+    }  
+      
+var result=(2 in obj);      
+var result1=("j" in obj);  
+  
+document.write(result)+"<br/>";  
+document.write(result1)+"<br/>"; 
+
+false  
+true 
+```
+
+
+
+### 8.作用域
+
+#### 1.理解
+
+就是一块‘地盘’，一个代码所在的区域
+
+他是静态的（想对于上下文对象），在编写代码时就确定了
+
+
+
+代码执行的区域
+
+#### 2.分类
+
+##### 
+
+全局作用域
+
+函数作用域
+
+没有块级作用域（es6有了）
+
+#### 3.作用
+
+隔离变量，不同作用域下同名变量不会有冲突
+
+
+
+防止污染全局变量
+
+隔离变量
+
+
+
+#### 4.作用域什么时候产生
+
+代码定义的时候
+
+
+
+#### 6.作用域什么时候销毁
+
+局部销毁：函数执行完毕
+
+全局销毁：关闭浏览器
+
+
+
+#### 7.作用域链
+
+查找（使用）变量的时候会在当前作用域查找，如果当前的作用域没有向外层作用域查找直到找到这个变量，如果没有  报错  xxx is not defined
+
+
+
+### 9.闭包
+
+什么是伪数组：
+
+具备数组的一般特性 可以通过下标取值，还有length属性但是没有数组的一般方法
+
+
+
+闭包的作用就是保存外部函数的局部变量（前提就是内部一定是在使用外部变量）
+
+
+
+定义:
+
+#### 1.闭包就是闭合的容器
+
+我们可以认为闭包就是一个对象 {key:value}
+
+#### 2.闭包的形成条件
+
+- 函数嵌套
+
+- 内部函数引用外部函数的局部变量
+- 外部函数调用
+
+#### 特点：
+
+- 闭包里保存的变量一定是内部函数引用外部函数的变量，如果没有使用的外部变量在外部函数执行就销毁释放内存了
+
+- 闭包在使用的时候通常会将内部的函数返出去
+- 会延长外部函数局部变量的生命周期
+
+#### 3.闭包的作用
+
+- 延长外部函数的局部变量的生命周期
+- 从外部访问函数内部的局部变量
+
+#### 4.缺点
+
+- 占内存
+- 不及时清除闭包很容易造成内存溢出
+
+#### 5.使用闭包的时候如何避免闭包带来的坏处
+
+- 能不用就不用
+
+- 及时清除闭包  
+
+- ```js
+  function a(){
+      var num  = 10 ;
+      return function b(){
+          console.log(num)
+      }
+  }
+  
+  var c = a();
+  c();
+  c();
+  c();
+  c();
+  c = null
+  
+  ```
+
+
+
+#### 6.闭包的使用场景
+
+- 解决循环遍历加监听的问题
+- 将内部的函数返出来
+
+
+
+### 10.同步和异步
+
+#### 同步
+
+- 同步会阻塞后面代码的执行	
+
+- 同步没有回调
+
+#### 异步
+
+- 异步是非阻塞的
+- 异步一定对应的有回调函数
+
+### 11.对象的创建
+
+套路:通过工厂函数动态创建对象并返回
+
+适用场景：需要创建多个对象
+
+```js
+function Person( name,age){
+    return{
+        name:name,
+        age:age
+    }
+}
+var person = new Person('李四'，20)
+```
+
+自定义构造函数模式
+
+套路：自定义构造函数，通过new创建对象
+
+适用场景：需要创建多个类型确定的对象
+
+问题：每个对象都有相同的数据，浪费内存
+
+```js
+function Person(name,age){
+    this.name = name
+    this.age = age 
+    this.eat = function(){
+        console.log('吃东西')
+    }
+}
+Person.prototype.eat= function (){
+    console.log('吃东西')
+}
+    var person = new person('kobe',42)
+
+
+```
+
+### 12.原型继承
+
+
+
+```js
+function Animal (name,age){
+    this.name = name;
+    this.age = age
+}
+function Cat(name,age){
+    this.name = name;
+    this.age = age
+}
+var tom = new Cat('tom',3)
+tom.eat();
+tom//自身没有
+tom.__proto__// 隐式原型对象找 === Cat.prototype 原型对象
+// 没有的话继续往下找
+tom.__proto__.__proto__ === object.protype
+
+//最简单的方法就是，但是不考虑因为外面有个大类
+Cat.protype.eat = function(){
+    console.log('吃')
+}
+
+//tom.__proto__.__proto__.__proto__ === Object.prototype 显示原型对象
+//让子类的原型成为父类的实例
+
+Cat.prototype = new Animal()
+//在使用原型继承的时候，注意矫正子类的构造器属性
+Cat.prototype.constructor = Cat;
+```
+
+#### 2.组合继承、借用构造函数继承
+
+借用构造函数继承（假的）
+
+1.套路：
+
+- 定义父类型的构造函数
+- 定义子类型的构造函数
+- 在子类型构造函数中调用父类型的构造函数
+
+2.关键：
+
+- 在子类型构造函数中通用super（）调用父类型构造函数
+
+```js
+function Animal (name,age){
+    this.name = name;
+    this.age = age
+}
+function Cat(name,age){
+    Animal.call(this,name,age)
+}
+
+var tom = new Cat('tom',20)
+Cat.prototype = new Animal()
+Cat.prototype.constructor = Cat
+```
+
+
+
+### 13.垃圾回收机制
+
+
+
+
+
+
+
+
+
+
+
 
 
 
