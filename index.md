@@ -578,6 +578,32 @@ Person.prototype.eat= function (){
 
 ```
 
+- 差异：
+
+  - 1.object构造函数方式，缺点：语句太多，流程太啰嗦
+
+  - 2.对象字面量，优点：书写简单   缺点：有太多重复的代码
+
+  - 3.工厂模式：优点：避免重复的代码 ，可以批量生产对象 缺点：不能明确区分属于那一类
+
+  - 自定义构造函数： 优点：可以生成多个实例对象，缺点：如果直接定义给实例本身太占内存
+
+- 原型继承：
+
+  - 原型继承：
+  
+    - 子类原型===父类的实例 例如：Child.protype = new parent()
+  
+    - 注意点：以上的步骤会导致子类原型的构造器属性丢失，所以需要手动条件构造器属性
+  
+    - child.protype.constructor = child
+  
+  - 借用构造函数继承（不是真正意义上的继承）
+  
+    - 在子类的构造函数中调用父类的构造函数
+    - 注意点：父类构造函数的this 指向问题
+    - 解决方案： 通过 call / apply 强制修改this 的指向 -----》当前子类的实例对象
+
 ### 12.原型继承
 
 
@@ -643,6 +669,80 @@ Cat.prototype.constructor = Cat
 
 ### 13.垃圾回收机制
 
+garbage collection（GC）
+
+相当于一个循环机制（反复的去扫代码）
+
+- 1.计数清除  （ie低版本，老的chrome）
+
+ 看内存的地址身上有几个指针指向，当一块内存地址身上指针个数为0，说明这块内存马上就要回收释放
+
+
+
+弃用的原因：
+
+```js
+var obj = {
+    a:obj1
+}
+var obj1{
+    b:obj
+}
+obj = null;
+obj1 = null
+```
+
+
+
+- 2.标记清除
+
+进入到代码执行的环境以后见此到需要使用的变量就再其身上加一个进场标记，在代码执行完的时候就会再之前加标记的变量身上再添加一个出场标记 
+
+### 14.进程 和 线程
+
+1.进程：程序的一次执行，它占有一片独有的内存空间
+
+2.线程：cpu的基本调度单位，是程序执行的一个完整流程
+
+3.进程与线程
+
+* 一个进程中一般至少有一个运动的线程：主线程
+* 一个进程中也可以同时运行多个线程，我们会说程序是多线程运行的
+* 一个进程内的数据可以供其中的多个线程直接共享
+* 多个进程之间的数据是不能直接共享的
+
+
+
+### 15.js的线程
+
+1. 代码从上至下依次执行
+2. 同步&异步
+3. 同步代表  alert（） 、console 赋值语句
+4. 异步代表： 定时器、 事件的回调
+
+
+
+
+
+浏览器的管理模块
+
+主线程    ---------》浏览器管理模块
+
+​    						dom事件管理模块
+
+​							ajax 请求管理模块
+
+​							定时器管理模块
+
+​									-
+
+​									-
+
+​									-
+
+事件轮询（event loop）
+
+callbackqueue    ：dom 事件回调、ajax请求回调、定时器回调
 
 
 
@@ -650,20 +750,89 @@ Cat.prototype.constructor = Cat
 
 
 
+- 事件循环机制
+  - 1.js是单线程的
+  - 2.所有的js代码都会在主线程执行
+  - 3.同步任务加载即执行
+  - 4.异步任务不会立即执行，而是会交给对应管理模块
+  - 5.管理模块一直在监视异步任务是否满足条件，如果满足条件就会对应的回调放入callback queue（回调队列）
+  - 6.主线程上的同步任务执行完以后会通过event loop（事件轮询机制）询问callback queue
+    - 查看事件是否有可能执行的回调函数，如果有将回调钩到主线程上执行
+    - 如果没有待会再来问
 
 
 
+操作对象属性优先级高于普通的赋值操作
 
 
 
+### 16.严格模式和json对象
+
+- 声明变量必须使用var 
+- 禁止自定义的函数中this指向window
+- 创建eval作用域
+- 对象不能有重名的属性
+
+```js
+use strrict
+var a = 123
+eval('var a = 345 alert(a)')//  345
+console.log(a)//123
+
+```
 
 
 
+### 17.object.create
 
+- object.create(protyep,[descriptorss])
+- 作用：以指定对象为原型创建新的对象
+- 为新的对象指定新的属性，并对属性进行描述
+  - value:指定值
+  - writable：标识当前属性值是否可以修改，默认false
+  - configurable：标识当前属性是否可以被删除，默认为false
+  - enumerable:标识当前对象是否可以被  for in 枚举 默认false
 
+18. ### object.defineProperties
 
+object.defineproperties(protype,[descriptorss])
 
+- 作用: 为指定对象定义扩展多个属性
 
+  - get：用来获取当前属性值的回调函数
+  - set：修改当前属性值的触发的回调函数，并且实参为修改后的值
 
+- 存取器属性：setter，getter 一个用来存值一个用来取值
 
+  ```js
+  var obj = {
+      name:'zs'
+      age:20
+  }
+  var sex = '男'
+  Object.defineproperties(obj,{
+      sex:{
+          get:function(){//设置，获取扩展属性值的时候被调用
+              return sex
+              
+          },
+          set:function(value){//当修改扩展的属性值的时候，set方法自动被调用
+              sex = value
+      	
+  }
+      }
+  })
+  
+  
+  方法二:
+  Object.defindeproperty(object,'sex'{
+    get:function(){
+       return sex
+  	},
+      sex:function(value){
+          sex = value
+      }
+                         })
+  ```
 
+  
